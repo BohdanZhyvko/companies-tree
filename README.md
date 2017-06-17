@@ -1,4 +1,4 @@
-# treeCompanies
+# companies-tree
 
 Problem
 You are designing a web application that manages organizational structure for parent and child companies.
