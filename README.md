@@ -30,5 +30,9 @@ To be supplied
 - Any database scripts
 - Any setup instructions
  
- 
+ __________________________________________________________________________________________________
+ You need for work!
+ 1) npm install --save express mongodb body-parser
+ 2) npm install --save-dev nodemon
+ 3) npm install express-handlebars
 
