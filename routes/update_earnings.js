@@ -2,7 +2,7 @@ var objectId = require('mongodb').ObjectID;
 var assert = require('assert');
 
 var updateEarnings = {
-  
+
   updateBranch: function updateAll(db, collectionName, id, sumEstimatedEarnings = 0) {
     db.collection(collectionName).findOne({"_id": objectId(id)},
     function(err, doc){
@@ -33,7 +33,8 @@ var updateEarnings = {
     function(err, doc){
         assert.equal(null, err);
         if(doc.parentId != ''){
-           updateEarnings.updateBranch(db, collectionName, doc.parentId, doc.estimatedEarningsWithChild);
+           updateEarnings.updateBranch(db, collectionName, doc.parentId,
+             doc.estimatedEarningsWithChild);
         }
    });
  }
