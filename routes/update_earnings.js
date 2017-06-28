@@ -3,14 +3,14 @@ var assert = require('assert');
 
 var updateEarnings = {
 
-  updateBranch: function updateAll(db, collectionName, id, sumEstimatedEarnings = 0) {
-    db.collection(collectionName).findOne({"_id": objectId(id)},
+  updateBranch: function update(db, collectionName, id, sumEstimatedEarnings = 0) {
+    db.collection(collectionName).findOne({'_id': objectId(id)},
     function(err, doc){
         assert.equal(null, err);
 
-        if(doc.childId != ''){
+        if(doc.childId != '' && doc.childId != null){
           sumEstimatedEarnings += parseInt(doc.estimatedEarnings);
-          db.collection(collectionName).updateOne({"_id": objectId(id)},
+          db.collection(collectionName).updateOne({'_id': objectId(id)},
             {$set:{ "estimatedEarningsWithChild" : sumEstimatedEarnings }},
             function(err, result) {
               assert.equal(null, err);
@@ -19,22 +19,28 @@ var updateEarnings = {
         }else{
           sumEstimatedEarnings = parseInt(doc.estimatedEarnings);
         }
-        if(doc.parentId != ''){
-          return updateAll(db, collectionName, doc.parentId, sumEstimatedEarnings);
+        if(doc.parentId != '' && doc.parentId != null){
+          return update(db, collectionName, doc.parentId, sumEstimatedEarnings);
         }else{
-          db.close();
           return 1;
         }
    });
  },
 
  updateBranchInPosition: function (db, collectionName, id, sumEstimatedEarnings = 0){
-    db.collection(collectionName).findOne({"_id": objectId(id)},
+    db.collection(collectionName).findOne({'_id': objectId(id)},
     function(err, doc){
         assert.equal(null, err);
         if(doc.parentId != ''){
-           updateEarnings.updateBranch(db, collectionName, doc.parentId,
-             doc.estimatedEarningsWithChild);
+          if(doc.estimatedEarningsWithChild != '' && doc.estimatedEarningsWithChild != null ){
+            sumEstimatedEarnings = parseInt(doc.estimatedEarningsWithChild);
+            console.log(sumEstimatedEarnings + 'it is with child');
+          }else {
+            sumEstimatedEarnings = parseInt(doc.estimatedEarnings);
+            console.log(sumEstimatedEarnings + 'it is estimatedEarnings');
+          }
+          updateEarnings.updateBranch(db, collectionName, doc.parentId,
+             sumEstimatedEarnings);
         }
    });
  }
