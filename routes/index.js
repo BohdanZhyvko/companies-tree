@@ -79,7 +79,6 @@ router.post('/insert', function(req, res, next) {
         db.collection(collectionName).find({'childId' : ''}).toArray(function(err, docs){
 
            for(var i = 0; i < docs.length; i++){
-             console.log(docs[i]);
              updateDB.updateBranch(db, collectionName, docs[i]._id );
            }
         });
@@ -102,12 +101,71 @@ router.post('/update', function(req, res, next) {
 
   mongo.connect(db.url, function(err, db) {
     assert.equal(null, err);
-    db.collection(collectionName).updateOne({'_id': objectId(id)}, {$set: item},
-    function(err, result) {
-      assert.equal(null, err);
-      console.log('Item updated');
-      db.close();
+    db.collection(collectionName).findOne({'_id': objectId(id)},
+      function(err, doc) {
+        assert.equal(null, err);
+
+        if (item.parentId == doc.parentId){
+          //updete in new branch
+          updateChild(id, item.childId);
+          //update in old branch
+          update(doc.childId, {'parentId' : '' });
+        }else if (doc.parentId != '' && doc.parentId != null) {
+          update(doc.parentId, {'childId' : doc.childId });
+        }
+        if (item.childId == doc.childId){
+          //updete in new branch
+          updateParent(id, item.parentId);
+          //update in old branch
+          update(doc.parentId, {'childId' : '' });
+        }else if (doc.childId != '' && doc.childId != null) {
+          update(doc.childId, {'parentId' : doc.parentId });
+        }
+        
+        if (item.parentId != '' && item.parentId != null) {
+          update(item.parentId, {'childId' : id});
+        }
+        if (item.childId != '' && item.childId != null) {
+          update(item.childId, {'parentId' : id});
+        }
+        update(id, item);
     });
+    //update one data
+      function update(id, item){
+        db.collection(collectionName).updateOne({'_id': objectId(id)}, {$set: item},
+        function(err, result) {
+          assert.equal(null, err);
+          console.log('Item updated')
+        });
+      }
+    //update new parent
+    function updateParent(id, itemId){
+      db.collection(collectionName).findOne({'_id': objectId(itemId)},
+        function(err, doc) {
+          assert.equal(null, err);
+          if (doc.childId != '') {
+            db.collection(collectionName).updateOne({'_id': objectId(doc.childId)},
+              {$set:{'parentId' : '' }}, function(err, result) {
+              assert.equal(null, err);
+              console.log('Item updated');
+            });
+          }
+        });
+    }
+    //update new child
+    function updateChild(id, itemId ){
+      db.collection(collectionName).findOne({'_id': objectId(itemId)},
+        function(err, doc) {
+          assert.equal(null, err);
+          if (doc.childId != '') {
+            db.collection(collectionName).updateOne({'_id': objectId(doc.parentId)},
+              {$set:{'childId' : '' }}, function(err, result) {
+              assert.equal(null, err);
+              console.log('Item updated');
+            });
+          }
+        });
+    }
   });
 });
 // Delete method
