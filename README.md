@@ -38,8 +38,7 @@ To be supplied
  3) npm install express-handlebars
  __________________________________________________________________________________________________
  Run:
- 
-   npm start
+     npm start
+   
  Url:
- 
-   http://localhost:8000
+     http://localhost:8000
