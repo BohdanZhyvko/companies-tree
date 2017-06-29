@@ -20,22 +20,6 @@
         <button type="submit">INSERT</button>
     </form>
 </section>
-<section class="get">
-    <h3>Get Data</h3>
-    <a href="/get-data">LOAD DATA</a>
-    <div>
-        {{# each items }}
-            <article class="item">
-                <div>Name: {{ this.name }}</div>
-                <div>Company Estimated Earnings: {{ this.estimatedEarnings }}</div>
-                <div>Company Estimated Earnings + Child: {{ this.estimatedEarningsWithChild }}</div>
-                <div>Parent id: {{ this.parentId }}</div>
-                <div>Child id: {{ this.childId }}</div>
-                <div>ID: {{ this._id }}</div>
-            </article>
-        {{/each}}
-    </div>
-</section>
 <section class="update">
     <h3>Update Data</h3>
     <form action="/update" method="post">
