@@ -35,4 +35,6 @@ To be supplied
  1) npm install --save express mongodb body-parser
  2) npm install --save-dev nodemon
  3) npm install express-handlebars
-
+ __________________________________________________________________________________________________
+ Run:
+  npm start
