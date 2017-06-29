@@ -73,3 +73,13 @@
         <button type="submit">DELETE</button>
     </form>
 </section>
+<section class="get-tree">
+  <h3>Get Tree</h3>
+  <h4>Name | Estimated Earnings | Estimated Earnings + Child | Parent Id | Child Id | ID</h4>
+  <a href="/get-data-tree">LOAD DATA TREE</a>
+  {{# each printData }}
+      <article class="item">
+          <div>{{ this }}</div>
+      </article>
+  {{/each}}
+</section>
