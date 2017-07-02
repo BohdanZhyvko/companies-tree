@@ -7,14 +7,14 @@ var collectionName = String(db.collectionName);
 var assert = require('assert');
 var updateDB = require('./update_earnings.js');
 
-/* GET home page. */
+/* GET home page. 
 router.get('/', function(req, res, next) {
     res.render('index', {
         title: 'Express'
     });
 });
-
-router.get('/get-data-tree', function(req, res, next) {
+*/
+router.get('/', function(req, res, next) {
     var str = '-';
     var resultArray = [];
 
