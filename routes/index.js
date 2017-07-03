@@ -7,13 +7,54 @@ var collectionName = String(db.collectionName);
 var assert = require('assert');
 var updateDB = require('./update_earnings.js');
 
-/* GET home page. 
+/* GET home page.
 router.get('/', function(req, res, next) {
     res.render('index', {
         title: 'Express'
     });
+});*/
+
+router.get('/json', function(req, res, next) {
+
+      mongo.connect(db.url, function(err, db) {
+          assert.equal(null, err);
+
+          db.collection(collectionName).find({})
+                    .toArray(function(err, docs) {
+            var dataTree = [];
+            var parentId = 0;
+            var estimatedEarningsWithChild = 0;
+
+            for(var i = 0; i < docs.length; i++){
+               //if we don`t have data in rewrite 'undefined' ->''
+               if(docs[i].estimatedEarningsWithChild != '' && docs[i].estimatedEarningsWithChild != null){
+                 estimatedEarningsWithChild = docs[i].estimatedEarningsWithChild;
+               }else {
+                 estimatedEarningsWithChild = '';
+               }
+               //if parent is in the root we need change: '' -> '#', for jstree
+               if(docs[i].parentId != '' && docs[i].parentId != null){
+                 parentId = docs[i].parentId;
+               }else {
+                 parentId = '#';
+               }
+               //collect data for text element in jstree
+               var dataText = docs[i].name + ' | ' + docs[i].estimatedEarnings +
+                ' | ' + estimatedEarningsWithChild;
+
+               // data for jstree
+              dataTree[i] = {
+                id: String(docs[i]._id),
+                text: dataText,
+                parent: parentId
+              }
+            }
+            //print in html
+            res.send(dataTree);
+          });
+      });
 });
-*/
+
 router.get('/', function(req, res, next) {
     var str = '-';
     var resultArray = [];
